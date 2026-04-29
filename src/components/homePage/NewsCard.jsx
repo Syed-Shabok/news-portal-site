@@ -1,30 +1,16 @@
-import { fetchNewsDetailsById } from "@/lib/data";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { CiBookmark, CiShare2 } from "react-icons/ci";
-import { FaArrowLeft, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 
-export async function generateMetadata({ params }) {
-  const { id } = await params;
-  const news = await fetchNewsDetailsById(id);
-
-  return {
-    title: news.title,
-    description: news.details,
-  };
-}
-
-const NewsDetailsPage = async ({ params }) => {
-  const { id } = await params;
-
-  const news = await fetchNewsDetailsById(id);
-  console.log("News Details: ", news);
+const NewsCard = ({ news }) => {
+  //   console.log("News Card: ", news);
 
   return (
-    <div className="container mx-auto card bg-base-100 shadow-sm my-6">
+    <div className="card bg-base-100 shadow-sm">
       {/* Author Info */}
       <div className="bg-gray-100 p-5 flex gap-4">
         <Image
@@ -48,8 +34,8 @@ const NewsDetailsPage = async ({ params }) => {
         </div>
       </div>
       <div className="card-body">
-        <h2 className="card-title text-3xl">{news.title}</h2>
-        <figure className="my-6">
+        <h2 className="card-title">{news.title}</h2>
+        <figure>
           <Image
             src={news.image_url}
             alt={`Image of ${news.title}`}
@@ -58,11 +44,9 @@ const NewsDetailsPage = async ({ params }) => {
             className="w-full"
           />
         </figure>
-        <p className="text-xl text-justify leading-relaxed">{news.details}</p>
-        <Link href={`/category/${news.category_id}`}>
-          <button className="btn bg-red-500 text-white my-6 text-lg p-6">
-            <FaArrowLeft /> All news in this category
-          </button>
+        <p className="line-clamp-3">{news.details}</p>
+        <Link href={`/news/${news._id}`}>
+          <p className="text-[#FF8C47] font-semibold text-lg">Read More</p>
         </Link>
 
         <hr className="my-3" />
@@ -83,4 +67,4 @@ const NewsDetailsPage = async ({ params }) => {
   );
 };
 
-export default NewsDetailsPage;
+export default NewsCard;

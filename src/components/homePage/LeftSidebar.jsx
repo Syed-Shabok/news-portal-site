@@ -11,10 +11,7 @@ const LeftSidebar = ({ categories, activeId }) => {
             key={category.category_id}
             className={`py-4 text-xl font-medium text-gray-500 ${activeId === category.category_id && "bg-slate-100 text-gray-950 font-semibold "}`}
           >
-            <Link
-              href={`/categories/${category.category_id}`}
-              className="block"
-            >
+            <Link href={`/category/${category.category_id}`} className="block">
               <p className="pl-15">{category.category_name}</p>
             </Link>
           </li>
