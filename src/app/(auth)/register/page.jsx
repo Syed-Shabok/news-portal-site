@@ -2,8 +2,10 @@
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
 
 const RegisterPage = () => {
   const {
@@ -12,7 +14,9 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm();
 
-  const handleLogin = async (data) => {
+  const router = useRouter();
+
+  const handleRegister = async (data) => {
     const { name, photoURL, email, password, acceptTerms } = data;
 
     const { data: res, error } = await authClient.signUp.email({
@@ -20,11 +24,19 @@ const RegisterPage = () => {
       email: email,
       password: password,
       image: photoURL,
-      callbackURL: "/",
     });
 
-    console.log(res, error);
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    router.replace("/");
+
+    // console.log(res, error);
   };
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center h-[85vh] bg-slate-100 rounded-lg">
@@ -35,7 +47,7 @@ const RegisterPage = () => {
 
         <hr className="my-5 border border-gray-300" />
 
-        <form onSubmit={handleSubmit(handleLogin)}>
+        <form onSubmit={handleSubmit(handleRegister)}>
           <fieldset className="fieldset my-3 h-25">
             <legend className="fieldset-legend text-lg">Your Name</legend>
             <input
@@ -81,14 +93,20 @@ const RegisterPage = () => {
             )}
           </fieldset>
 
-          <fieldset className="fieldset my-3 h-25">
+          <fieldset className="fieldset relative my-3 h-25">
             <legend className="fieldset-legend text-lg">Password</legend>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="input w-full bg-gray-100 rounded-sm py-5"
               placeholder="Enter your password"
               {...register("password", { required: "Password is required" })}
             />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-5 cursor-pointer"
+            >
+              {showPassword ? <LuEye size={16} /> : <LuEyeClosed size={16} />}
+            </span>
             {errors.password && (
               <span className="text-red-500 text-base">
                 {errors.password.message}

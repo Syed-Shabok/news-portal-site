@@ -2,8 +2,9 @@
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
 
 const LoginPage = () => {
   const {
@@ -24,6 +25,8 @@ const LoginPage = () => {
 
     console.log(res, error);
   };
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center h-[85vh] bg-slate-100 rounded-lg">
@@ -50,14 +53,20 @@ const LoginPage = () => {
             )}
           </fieldset>
 
-          <fieldset className="fieldset my-3 h-25">
-            <legend className="fieldset-legend text-lg">Password</legend>
+          <fieldset className="fieldset relative my-3 h-25">
+            <legend className=" fieldset-legend text-lg">Password</legend>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="input w-full bg-gray-100 rounded-sm py-5"
               placeholder="Enter your password"
               {...register("password", { required: "Password is required" })}
             />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-5 cursor-pointer"
+            >
+              {showPassword ? <LuEye size={16} /> : <LuEyeClosed size={16} />}
+            </span>
             {errors.password && (
               <span className="text-red-500 text-base">
                 {errors.password.message}

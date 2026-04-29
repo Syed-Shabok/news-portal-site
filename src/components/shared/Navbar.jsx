@@ -1,9 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import avatar from "@/assets/user.png";
 import Image from "next/image";
 import NavLink from "./NavLink";
+import { authClient } from "@/lib/auth-client";
 
 const Navbar = () => {
+  const { data: session } = authClient.useSession();
+
+  const user = session?.user;
+
+  // console.log("Session User: ", user);
+
   return (
     <div className="navbar bg-base-100 xl:px-0 xl:container xl:mx-auto my-2">
       <div className="navbar-start">
@@ -54,11 +63,33 @@ const Navbar = () => {
           </li>
         </ul>
       </div>
-      <div className="navbar-end space-x-2">
-        <Image src={avatar} alt="Avatar Icon" />
-        <Link href={"/login"}>
-          <button className="btn text-white bg-[#403F3F] px-10">Login</button>
-        </Link>
+      <div className="navbar-end space-x-2 gap-2">
+        {user ? (
+          <>
+            <p>{`Hello, ${user.name}`}</p>
+
+            <Image
+              src={user.image || avatar}
+              alt="User photo"
+              width={60}
+              height={60}
+              className="rounded-full"
+            />
+
+            <Link href={"/login"}>
+              <button
+                onClick={async () => await authClient.signOut()}
+                className="btn text-white bg-[#403F3F] px-10"
+              >
+                Logout
+              </button>
+            </Link>
+          </>
+        ) : (
+          <Link href={"/login"}>
+            <button className="btn text-white bg-[#403F3F] px-10">Login</button>
+          </Link>
+        )}
       </div>
     </div>
   );
